@@ -1,6 +1,9 @@
 
-
 import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from './services/supabaseClient';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { type Session } from '@supabase/supabase-js';
 import { type ChatMessage, Role, type QuestionWithOptions, type PlanContext, type ClarifyingQuestionsState } from './types';
 // --- API SERVICE SWITCH ---
 // To use the REAL Gemini API, use the geminiService import.
@@ -55,6 +58,7 @@ const WelcomeMessage: React.FC<{onSendMessage: (text: string) => void}> = ({ onS
 
 
 const App: React.FC = () => {
+    const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [clarifyingQuestions, setClarifyingQuestions] = useState<ClarifyingQuestionsState | null>(null);
@@ -63,6 +67,20 @@ const App: React.FC = () => {
     const [isWorkspaceView, setIsWorkspaceView] = useState(false);
     const [activeWorkspaceView, setActiveWorkspaceView] = useState<WorkspaceView>('flowchart');
     const chatEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+        });
+
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     const initialUserQuery = messages.find(m => m.role === Role.USER)?.content || '';
 
@@ -256,6 +274,16 @@ const App: React.FC = () => {
             </div>
         );
     };
+    
+    if (!session) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
+                <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                    <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={['google']} />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">

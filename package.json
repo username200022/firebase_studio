@@ -10,22 +10,15 @@
   },
   "dependencies": {
     "@google/genai": "^1.13.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.55.0",
+    "dagre": "^0.8.5",
+    "marked": "^13.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "marked": "^13.0.0",
     "reactflow": "^11.11.4",
-    "dagre": "^0.8.5",
-    "recharts": "^2.12.7",
-    "./services/geminiService": "latest",
-    "./services/mockGeminiService": "latest",
-    "./utils/plan-parser": "latest",
-    "./components/SWOTAnalysisView": "latest",
-    "./components/ExecutiveSummary": "latest",
-    "./components/FinancialProjections": "latest",
-    "./components/charts/BreakEvenChart": "latest",
-    "./components/modals/StaffCostModal": "latest",
-    "./components/modals/MarketingCostModal": "latest",
-    "./components/EditableCostControl": "latest"
+    "recharts": "^3.1.2"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
