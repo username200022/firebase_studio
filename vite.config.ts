@@ -4,10 +4,7 @@ import { defineConfig, loadEnv } from 'vite';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
+      define: Object.fromEntries(Object.entries(env).map(([key, val]) => [`process.env.${key}`, JSON.stringify(val)])),
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
